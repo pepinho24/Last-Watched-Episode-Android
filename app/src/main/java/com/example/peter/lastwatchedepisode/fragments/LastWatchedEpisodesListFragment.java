@@ -17,16 +17,20 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.peter.lastwatchedepisode.R;
 import com.example.peter.lastwatchedepisode.Show;
+import com.example.peter.lastwatchedepisode.ShowAdapter;
 import com.example.peter.lastwatchedepisode.ShowsDataSource;
 
 public class LastWatchedEpisodesListFragment extends ListFragment implements View.OnClickListener {
 
     private ShowsDataSource datasource;
+    public ShowAdapter adapter;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,48 +38,21 @@ public class LastWatchedEpisodesListFragment extends ListFragment implements Vie
 
         datasource = new ShowsDataSource(this.getActivity());
         datasource.open();
-       // Show show = datasource.createShow("Show title Test ","Description test","Sunday");
+        //Show show = datasource.createShow("Show title Test ","Description test","Sunday");
         List<Show> values = datasource.getAllShows();
-
+        //datasource.close();
         // use the SimpleCursorAdapter to show the
         // elements in a ListView
-        ArrayAdapter<Show> adapter = new ArrayAdapter<Show>(this.getActivity(),
-                android.R.layout.simple_list_item_1, values);
+        adapter = new ShowAdapter(this.getActivity(),values);
+//        ArrayAdapter<Show> adapter = new ArrayAdapter<Show>(this.getActivity(),
+//                android.R.layout.simple_list_item_1, values);
         setListAdapter(adapter);
-        View.OnClickListener listener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String str = null;
-                @SuppressWarnings("unchecked")
-                ArrayAdapter<Show> adapter = (ArrayAdapter<Show>) getListAdapter();
-                Show show = null;
-                switch (v.getId()) {
-                    case R.id.btn_add:
-                        Show[] shows = new Show[]{new Show("Show title 1 ", "Description 1", "Sunday"), new Show("Show title 2 ", "Description 2", "Friday"), new Show("Show title 3 ", "Description 3", "Monday")};
-                        int nextInt = new Random().nextInt(3);
-                        // save the new comment to the database
-                        show = datasource.createShow(shows[nextInt].getTitle(), shows[nextInt].getDescription(), shows[nextInt].getAirWeekDay());
-                        adapter.add(show);
-                        Toast.makeText(v.getContext(), "Show Added", Toast.LENGTH_LONG).show();
-                        break;
-                    case R.id.btn_delete:
-                        if (getListAdapter().getCount() > 0) {
-                            show = (Show) getListAdapter().getItem(0);
-                            datasource.deleteShow(show);
-                            adapter.remove(show);
-                            Toast.makeText(v.getContext(), "Show Deleted", Toast.LENGTH_LONG).show();
-                        }
-                        break;
-                }
-                adapter.notifyDataSetChanged();
-            }
-        };
+
 
         Button btnAdd = (Button) rootView.findViewById(R.id.btn_add);
-        btnAdd.setOnClickListener(listener);
+        btnAdd.setOnClickListener(this);
         Button btnDelete = (Button) rootView.findViewById(R.id.btn_delete);
-        btnDelete.setOnClickListener(listener);
-
+        btnDelete.setOnClickListener(this);
 
         return rootView;
 //        return super.onCreateView(inflater, container, savedInstanceState);
@@ -85,14 +62,24 @@ public class LastWatchedEpisodesListFragment extends ListFragment implements Vie
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
+        RelativeLayout rel = (RelativeLayout)v;
+        int childCount = rel.getChildCount();
+        String[] properties = new String[childCount];
 
-        Toast.makeText(this.getActivity(), ((TextView)v).getText(), Toast.LENGTH_LONG).show();
+        for (int i = 0; i < childCount; i++){
+            TextView view =(TextView)rel.getChildAt(i);
+            properties[i] = (String)view.getText();
+        }
+        Show show = new Show(properties[0],properties[1],properties[2]);
+
+        Toast.makeText(this.getActivity(), show.getTitle() +": "+show.getDescription()+ " airs every " + show.getAirWeekDay() , Toast.LENGTH_SHORT).show();
     }
+
     @Override
     public void onClick(View v) {
         String str = null;
-        @SuppressWarnings("unchecked")
-        ArrayAdapter<Show> adapter = (ArrayAdapter<Show>) getListAdapter();
+
+        //adapter = (ShowAdapter) getListAdapter();
         Show show = null;
         switch (v.getId()) {
             case R.id.btn_add:
@@ -101,16 +88,19 @@ public class LastWatchedEpisodesListFragment extends ListFragment implements Vie
                 // save the new comment to the database
                 show = datasource.createShow(shows[nextInt].getTitle(), shows[nextInt].getDescription(), shows[nextInt].getAirWeekDay());
                 adapter.add(show);
+                Toast.makeText(v.getContext(), "Show Added", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btn_delete:
                 if (getListAdapter().getCount() > 0) {
-                    show = (Show) getListAdapter().getItem(0);
+                    show = adapter.getItem(0);
                     datasource.deleteShow(show);
                     adapter.remove(show);
+                    Toast.makeText(v.getContext(), "Show Deleted", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
+
         adapter.notifyDataSetChanged();
-    }
+   }
 
 }

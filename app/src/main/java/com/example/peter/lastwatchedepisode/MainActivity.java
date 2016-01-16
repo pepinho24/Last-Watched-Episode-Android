@@ -19,6 +19,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.example.peter.lastwatchedepisode.fragments.AddShowFragment;
 import com.example.peter.lastwatchedepisode.fragments.LastWatchedEpisodesListFragment;
 import com.example.peter.lastwatchedepisode.fragments.ShowDetailsPageFragment;
 
@@ -61,6 +62,8 @@ public class MainActivity extends ActionBarActivity
             case 0: fragment = new LastWatchedEpisodesListFragment();
                 break;
             case 1: fragment = new ShowDetailsPageFragment();
+                break;
+            case 2: fragment = new AddShowFragment();
                 break;
 
         }

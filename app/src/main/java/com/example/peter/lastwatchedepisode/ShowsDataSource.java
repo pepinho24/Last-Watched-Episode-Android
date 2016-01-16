@@ -52,9 +52,10 @@ public class ShowsDataSource {
 
     public void deleteShow(Show show) {
         long id = show.getId();
-        System.out.println("Show deleted with id: " + id);
+
         database.delete(MySQLiteHelper.TABLE_SHOWS, MySQLiteHelper.COLUMN_ID
                 + " = " + id, null);
+        System.out.println("Show deleted with id: " + id);
     }
 
     public List<Show> getAllShows() {
