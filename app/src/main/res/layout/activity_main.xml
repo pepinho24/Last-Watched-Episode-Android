@@ -20,6 +20,7 @@
         android:name="com.example.peter.lastwatchedepisode.NavigationDrawerFragment"
         android:layout_width="@dimen/navigation_drawer_width"
         android:layout_height="match_parent"
+
         android:layout_gravity="left"
         tools:layout="@layout/drawer_main" />
 

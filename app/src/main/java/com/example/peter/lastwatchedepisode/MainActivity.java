@@ -1,6 +1,7 @@
 package com.example.peter.lastwatchedepisode;
 
 import android.app.Activity;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,9 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.example.peter.lastwatchedepisode.fragments.LastWatchedEpisodesListFragment;
+import com.example.peter.lastwatchedepisode.fragments.ShowDetailsPageFragment;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -49,9 +53,21 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+
+        Fragment fragment;
+        FragmentManager fm = getSupportFragmentManager();
+        switch (position){
+            default:
+            case 0: fragment = new LastWatchedEpisodesListFragment();
+                break;
+            case 1: fragment = new ShowDetailsPageFragment();
+                break;
+
+        }
+
+//        FragmentManager fm = getSupportFragmentManager();
+        fm.beginTransaction()
+                .replace(R.id.container, fragment)
                 .commit();
     }
 
