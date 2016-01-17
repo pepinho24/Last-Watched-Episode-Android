@@ -3,6 +3,8 @@ package com.example.peter.lastwatchedepisode.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
@@ -38,6 +40,9 @@ public class LastWatchedEpisodesListFragment extends ListFragment implements Lis
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        this.getListView().setDivider(new ColorDrawable(Color.LTGRAY));
+        this.getListView().setDividerHeight(3);
 
         AdapterView.OnItemLongClickListener listener = new AdapterView.OnItemLongClickListener() {
             @Override

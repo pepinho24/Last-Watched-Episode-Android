@@ -22,4 +22,22 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Go to shows list"
+        android:id="@+id/btn_go_to_shows_list"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="GoToShowsList"/>
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Add new show"
+        android:id="@+id/btn_add_new_show"
+        android:layout_above="@+id/btn_go_to_shows_list"
+        android:layout_centerHorizontal="true"
+        android:onClick="GoToAddNewShow"/>
+
 </RelativeLayout>

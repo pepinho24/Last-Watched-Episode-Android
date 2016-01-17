@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LastWatchedEpisode</string>
+    <string name="app_name">Last Watched Episode</string>
 
     <string name="title_section1">Shows list page</string>
     <string name="title_section2">Show Details page</string>

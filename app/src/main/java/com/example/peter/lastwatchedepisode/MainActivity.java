@@ -131,6 +131,24 @@ public class MainActivity extends ActionBarActivity
         actionBar.setTitle(mTitle);
     }
 
+    private void GoToFragment(Fragment fragment){
+        FragmentManager fm = getSupportFragmentManager();
+        fm.beginTransaction()
+                .setCustomAnimations(R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom)
+                //.add(R.id.container, fragment)
+                .replace(R.id.container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public void GoToShowsList(View view) {
+        GoToFragment(new LastWatchedEpisodesListFragment());
+    }
+
+    public void GoToAddNewShow(View view) {
+        GoToFragment(new AddShowFragment());
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
