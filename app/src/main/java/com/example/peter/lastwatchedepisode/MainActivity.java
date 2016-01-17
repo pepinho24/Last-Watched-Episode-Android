@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
@@ -36,6 +38,8 @@ import com.example.peter.lastwatchedepisode.fragments.HomeFragment;
 import com.example.peter.lastwatchedepisode.fragments.LastWatchedEpisodesListFragment;
 import com.example.peter.lastwatchedepisode.fragments.ShowDetailsPageFragment;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity
@@ -63,9 +67,10 @@ public class MainActivity extends ActionBarActivity
     }
 
 
-    public void ToastNotify(String message){
+    public void ToastNotify(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -89,6 +94,9 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        // Set background on start
+        SetBackground();
     }
 
     @Override
@@ -152,7 +160,7 @@ public class MainActivity extends ActionBarActivity
         actionBar.setTitle(mTitle);
     }
 
-    private void GoToFragment(Fragment fragment){
+    private void GoToFragment(Fragment fragment) {
 
         FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction()
@@ -161,8 +169,7 @@ public class MainActivity extends ActionBarActivity
                 .commit();
     }
 
-    public void GoToDetails(Show show)
-    {
+    public void GoToDetails(Show show) {
         Bundle obj = new Bundle();
         ArrayList<String> props = new ArrayList<String>();
         props.add(String.valueOf(show.getId()));
@@ -194,7 +201,7 @@ public class MainActivity extends ActionBarActivity
         Button btn_take_picture = (Button) findViewById(R.id.btn_take_picture);
 
         // disable the button if the user has no camera
-        if(!hasCamera()){
+        if (!hasCamera()) {
             btn_take_picture.setEnabled(false);
         }
 
@@ -203,6 +210,7 @@ public class MainActivity extends ActionBarActivity
     }
 
     static final int SELECT_FILE = 1;
+
     public void OnAddFromGalleryClick(View view) {
         iv_background_image = (ImageView) findViewById(R.id.iv_background_image);
 
@@ -212,28 +220,61 @@ public class MainActivity extends ActionBarActivity
     }
 
     public void OnDefaultBackgroundClick(View view) {
-        FrameLayout frl = (FrameLayout) findViewById(R.id.container);
-        frl.setBackground(getResources().getDrawable(R.drawable.background_blue_green));
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("background_uri", "default");
+        editor.commit();
+
+        SetBackground();
         ToastNotify("Background changed!");
+    }
+
+    private void SetBackground() {
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        String res_uri = sharedPref.getString("background_uri", "default");
+
+        if (res_uri == "default") {
+            FrameLayout frl = (FrameLayout) findViewById(R.id.container);
+            frl.setBackground(getResources().getDrawable(R.drawable.background_blue_green));
+        } else {
+            FrameLayout frl = (FrameLayout) findViewById(R.id.container);
+            Uri parsedUri = Uri.parse(res_uri);
+            Drawable myDrawable;
+            try {
+                InputStream input = getContentResolver().openInputStream(parsedUri);
+                myDrawable = Drawable.createFromStream(input, parsedUri.toString());
+            } catch (FileNotFoundException e) {
+                myDrawable = getResources().getDrawable(R.drawable.background_blue_green);
+            }
+
+            frl.setBackground(myDrawable);
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
-            Uri imageUri= data.getData();
-            iv_background_image.setImageURI(imageUri);
-            FrameLayout frl = (FrameLayout) findViewById(R.id.container);
-            frl.setBackground(iv_background_image.getDrawable());
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Uri imageUri = data.getData();
+//            iv_background_image.setImageURI(imageUri);
+//            FrameLayout frl = (FrameLayout) findViewById(R.id.container);
+//            frl.setBackground(iv_background_image.getDrawable());
+
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+
+            editor.putString("background_uri", imageUri.toString());
+            editor.commit();
+
+            SetBackground();
             ToastNotify("Background changed!");
-            // TODO: Make it permanent
         }
     }
 
 
-    public boolean hasCamera(){
+    public boolean hasCamera() {
         return getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
     }
-
 
 
     /**
@@ -275,5 +316,4 @@ public class MainActivity extends ActionBarActivity
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
-
 }
