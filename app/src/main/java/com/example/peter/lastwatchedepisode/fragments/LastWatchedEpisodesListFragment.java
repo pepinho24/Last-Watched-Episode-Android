@@ -1,5 +1,6 @@
 package com.example.peter.lastwatchedepisode.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
@@ -13,6 +14,7 @@ import java.util.Random;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
@@ -26,15 +28,38 @@ import com.example.peter.lastwatchedepisode.Show;
 import com.example.peter.lastwatchedepisode.ShowAdapter;
 import com.example.peter.lastwatchedepisode.ShowsDataSource;
 
-public class LastWatchedEpisodesListFragment extends ListFragment implements View.OnClickListener {
+public class LastWatchedEpisodesListFragment extends ListFragment implements ListView.OnClickListener {
 
     private ShowsDataSource datasource;
     public ShowAdapter adapter;
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        AdapterView.OnItemLongClickListener listener = new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                RelativeLayout rel = (RelativeLayout) view;
+                int childCount = rel.getChildCount();
+                String[] properties = new String[childCount];
+
+                for (int i = 0; i < childCount; i++) {
+                    TextView v = (TextView) rel.getChildAt(i);
+                    properties[i] = (String) v.getText();
+                }
+                Show show = new Show(properties[0], properties[1], properties[2]);
+
+                Toast.makeText(view.getContext(), "HOLDED: " + show.getTitle(), Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        };
+        getListView().setOnItemLongClickListener(listener);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View rootView =inflater.inflate(R.layout.fragment_last_watched_episodes_list, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_last_watched_episodes_list, container, false);
 
         datasource = new ShowsDataSource(this.getActivity());
         datasource.open();
@@ -43,11 +68,10 @@ public class LastWatchedEpisodesListFragment extends ListFragment implements Vie
         //datasource.close();
         // use the SimpleCursorAdapter to show the
         // elements in a ListView
-        adapter = new ShowAdapter(this.getActivity(),values);
+        adapter = new ShowAdapter(this.getActivity(), values);
 //        ArrayAdapter<Show> adapter = new ArrayAdapter<Show>(this.getActivity(),
 //                android.R.layout.simple_list_item_1, values);
         setListAdapter(adapter);
-
 
         Button btnAdd = (Button) rootView.findViewById(R.id.btn_add);
         btnAdd.setOnClickListener(this);
@@ -58,21 +82,38 @@ public class LastWatchedEpisodesListFragment extends ListFragment implements Vie
 //        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+//    @Override
+//    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//        RelativeLayout rel = (RelativeLayout) view;
+//        int childCount = rel.getChildCount();
+//        String[] properties = new String[childCount];
+//
+//        for (int i = 0; i < childCount; i++) {
+//            TextView v = (TextView) rel.getChildAt(i);
+//            properties[i] = (String) v.getText();
+//        }
+//        Show show = new Show(properties[0], properties[1], properties[2]);
+//
+//        Toast.makeText(view.getContext(), "HOLDED: " + show.getTitle(), Toast.LENGTH_SHORT).show();
+//        return true;
+//    }
+
+
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        RelativeLayout rel = (RelativeLayout)v;
+        RelativeLayout rel = (RelativeLayout) v;
         int childCount = rel.getChildCount();
         String[] properties = new String[childCount];
 
-        for (int i = 0; i < childCount; i++){
-            TextView view =(TextView)rel.getChildAt(i);
-            properties[i] = (String)view.getText();
+        for (int i = 0; i < childCount; i++) {
+            TextView view = (TextView) rel.getChildAt(i);
+            properties[i] = (String) view.getText();
         }
-        Show show = new Show(properties[0],properties[1],properties[2]);
+        Show show = new Show(properties[0], properties[1], properties[2]);
 
-        Toast.makeText(this.getActivity(), show.getTitle() +": "+show.getDescription()+ " airs every " + show.getAirWeekDay() , Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.getActivity(), show.getTitle() + ": " + show.getDescription() + " airs every " + show.getAirWeekDay(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -101,6 +142,5 @@ public class LastWatchedEpisodesListFragment extends ListFragment implements Vie
         }
 
         adapter.notifyDataSetChanged();
-   }
-
+    }
 }

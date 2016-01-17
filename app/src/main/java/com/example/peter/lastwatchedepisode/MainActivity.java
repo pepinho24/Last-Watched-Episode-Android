@@ -1,6 +1,8 @@
 package com.example.peter.lastwatchedepisode;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -20,11 +22,34 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.peter.lastwatchedepisode.fragments.AddShowFragment;
+import com.example.peter.lastwatchedepisode.fragments.HomeFragment;
 import com.example.peter.lastwatchedepisode.fragments.LastWatchedEpisodesListFragment;
 import com.example.peter.lastwatchedepisode.fragments.ShowDetailsPageFragment;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to exit ?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        // TODO Auto-generated method stub
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        // TODO Auto-generated method stub
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -57,32 +82,43 @@ public class MainActivity extends ActionBarActivity
 
         Fragment fragment;
         FragmentManager fm = getSupportFragmentManager();
-        switch (position){
+        switch (position) {
             default:
-            case 0: fragment = new LastWatchedEpisodesListFragment();
+            case 0:
+                fragment = new HomeFragment();
                 break;
-            case 1: fragment = new ShowDetailsPageFragment();
+            case 1:
+                fragment = new LastWatchedEpisodesListFragment();
                 break;
-            case 2: fragment = new AddShowFragment();
+            case 2:
+                fragment = new ShowDetailsPageFragment();
+                break;
+            case 3:
+                fragment = new AddShowFragment();
                 break;
 
         }
 
 //        FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction()
+                .setCustomAnimations(R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom)
                 .replace(R.id.container, fragment)
+//                .addToBackStack(null)
                 .commit();
     }
 
     public void onSectionAttached(int number) {
         switch (number) {
             case 1:
-                mTitle = getString(R.string.title_section1);
+                mTitle = getString(R.string.title_sectionHome);
                 break;
             case 2:
-                mTitle = getString(R.string.title_section2);
+                mTitle = getString(R.string.title_section1);
                 break;
             case 3:
+                mTitle = getString(R.string.title_section2);
+                break;
+            case 4:
                 mTitle = getString(R.string.title_section3);
                 break;
         }
