@@ -26,6 +26,8 @@ import com.example.peter.lastwatchedepisode.fragments.HomeFragment;
 import com.example.peter.lastwatchedepisode.fragments.LastWatchedEpisodesListFragment;
 import com.example.peter.lastwatchedepisode.fragments.ShowDetailsPageFragment;
 
+import java.util.ArrayList;
+
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
@@ -132,13 +134,28 @@ public class MainActivity extends ActionBarActivity
     }
 
     private void GoToFragment(Fragment fragment){
+
         FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction()
                 .setCustomAnimations(R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom)
-                //.add(R.id.container, fragment)
                 .replace(R.id.container, fragment)
-                .addToBackStack(null)
                 .commit();
+    }
+
+    public void GoToDetails(Show show)
+    {
+        Bundle obj = new Bundle();
+        ArrayList<String> props = new ArrayList<String>();
+        props.add(String.valueOf(show.getId()));
+        props.add(show.getTitle());
+        props.add(show.getDescription());
+        props.add(show.getAirWeekDay());
+        obj.putStringArrayList("ShowDetails", props);
+
+        ShowDetailsPageFragment frag = new ShowDetailsPageFragment();
+        frag.setArguments(obj);
+
+        GoToFragment(frag);
     }
 
     public void GoToShowsList(View view) {

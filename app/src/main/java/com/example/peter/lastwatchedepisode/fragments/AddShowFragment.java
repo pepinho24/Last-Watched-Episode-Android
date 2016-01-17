@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.peter.lastwatchedepisode.MainActivity;
 import com.example.peter.lastwatchedepisode.R;
 import com.example.peter.lastwatchedepisode.Show;
 import com.example.peter.lastwatchedepisode.ShowAdapter;
@@ -32,7 +33,7 @@ public class AddShowFragment extends Fragment implements View.OnClickListener {
         btnAdd.setOnClickListener(this);
 
         Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner_airweekday);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getActivity() ,R.array.days_of_week_array,R.layout.support_simple_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getActivity(), R.array.days_of_week_array, R.layout.support_simple_spinner_dropdown_item);
         //adapter.setDropDownViewResource(R.layout.abc_simple_dropdown_hint);
         spinner.setAdapter(adapter);
 
@@ -53,13 +54,9 @@ public class AddShowFragment extends Fragment implements View.OnClickListener {
         } else {
             Show show = datasource.createShow(title, description, airweekday);
             Toast.makeText(v.getContext(), "Show Added", Toast.LENGTH_SHORT).show();
-             Fragment fragment = new ShowDetailsPageFragment();
-        FragmentManager fm = this.getActivity().getSupportFragmentManager();
-        fm.beginTransaction()
-                .setCustomAnimations(R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom)
-                .replace(R.id.container, fragment)
-                .commit();
-                // TODO: send show to detais page....
+
+            MainActivity activity = (MainActivity) getActivity();
+            activity.GoToDetails(show);
         }
     }
 

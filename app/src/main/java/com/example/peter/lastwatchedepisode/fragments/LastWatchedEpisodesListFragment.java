@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.peter.lastwatchedepisode.MainActivity;
 import com.example.peter.lastwatchedepisode.R;
 import com.example.peter.lastwatchedepisode.Show;
 import com.example.peter.lastwatchedepisode.ShowAdapter;
@@ -74,24 +75,14 @@ public class LastWatchedEpisodesListFragment extends ListFragment implements Lis
 
                             }
                         });
+
                 AlertDialog alert = builder.create();
                 alert.show();
 
-
-//                RelativeLayout rel = (RelativeLayout) view;
-//                int childCount = rel.getChildCount();
-//                String[] properties = new String[childCount];
-//
-//                for (int i = 0; i < childCount; i++) {
-//                    TextView v = (TextView) rel.getChildAt(i);
-//                    properties[i] = (String) v.getText();
-//                }
-//                Show show = new Show(properties[1], properties[2], properties[3]);
-//
-//                Toast.makeText(view.getContext(), "HOLDED: " + show.getTitle(), Toast.LENGTH_SHORT).show();
                 return true;
             }
         };
+
         getListView().setOnItemLongClickListener(listener);
     }
 
@@ -101,14 +92,10 @@ public class LastWatchedEpisodesListFragment extends ListFragment implements Lis
 
         datasource = new ShowsDataSource(this.getActivity());
         datasource.open();
-        //Show show = datasource.createShow("Show title Test ","Description test","Sunday");
+
         List<Show> values = datasource.getAllShows();
-        //datasource.close();
-        // use the SimpleCursorAdapter to show the
-        // elements in a ListView
+
         adapter = new ShowAdapter(this.getActivity(), values);
-//        ArrayAdapter<Show> adapter = new ArrayAdapter<Show>(this.getActivity(),
-//                android.R.layout.simple_list_item_1, values);
         setListAdapter(adapter);
 
         Button btnAdd = (Button) rootView.findViewById(R.id.btn_add);
@@ -117,7 +104,6 @@ public class LastWatchedEpisodesListFragment extends ListFragment implements Lis
         btnDelete.setOnClickListener(this);
 
         return rootView;
-//        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -132,17 +118,20 @@ public class LastWatchedEpisodesListFragment extends ListFragment implements Lis
             TextView view = (TextView) rel.getChildAt(i);
             properties[i] = (String) view.getText();
         }
-        Show show = new Show(properties[0], properties[1], properties[2]);
 
-        Toast.makeText(this.getActivity(), show.getTitle() + ": " + show.getDescription() + " airs every " + show.getAirWeekDay(), Toast.LENGTH_SHORT).show();
+        Show show = new Show(properties[1], properties[2], properties[3]);
+        show.setId(new Integer(properties[0]));
+        // Toast.makeText(this.getActivity(), show.getTitle() + ": " + show.getDescription() + " airs every " + show.getAirWeekDay(), Toast.LENGTH_SHORT).show();
+
+        MainActivity activity = (MainActivity) getActivity();
+        activity.GoToDetails(show);
+
     }
 
     @Override
     public void onClick(View v) {
-        String str = null;
 
-        //adapter = (ShowAdapter) getListAdapter();
-        Show show = null;
+        Show show;
         switch (v.getId()) {
             case R.id.btn_add:
                 Show[] shows = new Show[]{new Show("Show title 1 ", "Description 1", "Sunday"), new Show("Show title 2 ", "Description 2", "Friday"), new Show("Show title 3 ", "Description 3", "Monday")};
@@ -155,10 +144,11 @@ public class LastWatchedEpisodesListFragment extends ListFragment implements Lis
             case R.id.btn_delete:
                 if (getListAdapter().getCount() > 0) {
                     show = adapter.getItem(0);
-                    datasource.deleteShow(show);
-                    adapter.remove(show);
-                    Toast.makeText(v.getContext(), "Show Deleted", Toast.LENGTH_SHORT).show();
+//                    datasource.deleteShow(show);
+//                    adapter.remove(show);
+                    Toast.makeText(v.getContext(), "To delete a show hold on it!", Toast.LENGTH_SHORT).show();
                 }
+
                 break;
         }
 
