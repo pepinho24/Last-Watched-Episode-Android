@@ -1,6 +1,7 @@
 package com.example.peter.lastwatchedepisode;
 
 import android.content.Context;
+import android.nfc.Tag;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ public class ShowAdapter extends ArrayAdapter<Show> {
 
     static class DataHandler
     {
+        TextView id;
         TextView title;
         TextView description;
         TextView airweekday;
@@ -47,22 +49,26 @@ public class ShowAdapter extends ArrayAdapter<Show> {
             LayoutInflater inflater=(LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             row=inflater.inflate(R.layout.show_item_layout,parent,false);
             handler=new DataHandler();
+            handler.id = (TextView)row.findViewById(R.id.tv_id);
             handler.title=(TextView)row.findViewById(R.id.tv_title);
             handler.description=(TextView)row.findViewById(R.id.tv_description);
             handler.airweekday=(TextView)row.findViewById(R.id.tv_airweekday);
             row.setTag(handler);
         }
         else {
-
             handler=(DataHandler)row.getTag();
         }
 
         Show dataProvider;
 
         dataProvider=(Show)this.getItem(position);
+
+        String id = String.valueOf(dataProvider.getId());
+        handler.id.setText(id);
         handler.title.setText(dataProvider.getTitle());
         handler.description.setText(dataProvider.getDescription());
         handler.airweekday.setText(dataProvider.getAirWeekDay());
+
         return row;
     }
 }

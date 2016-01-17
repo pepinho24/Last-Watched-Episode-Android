@@ -1,6 +1,8 @@
 package com.example.peter.lastwatchedepisode.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
@@ -39,18 +41,49 @@ public class LastWatchedEpisodesListFragment extends ListFragment implements Lis
 
         AdapterView.OnItemLongClickListener listener = new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(final AdapterView<?> parent, final View view, final int position, long id) {
                 RelativeLayout rel = (RelativeLayout) view;
-                int childCount = rel.getChildCount();
-                String[] properties = new String[childCount];
+                final long showId = new Integer(((TextView) rel.getChildAt(0)).getText().toString());
+                String title = ((TextView) rel.getChildAt(1)).getText().toString();
+//                String description = ((TextView) rel.getChildAt(2)).getText().toString();
+//                String airweekday = ((TextView) rel.getChildAt(3)).getText().toString();
+//                final Show show = new Show(title,description,airweekday);
+//                show.setId(new Integer(String.valueOf(showId)));
 
-                for (int i = 0; i < childCount; i++) {
-                    TextView v = (TextView) rel.getChildAt(i);
-                    properties[i] = (String) v.getText();
-                }
-                Show show = new Show(properties[0], properties[1], properties[2]);
 
-                Toast.makeText(view.getContext(), "HOLDED: " + show.getTitle(), Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setMessage("Are you sure you want to delete '"+title +"' ?")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                datasource.deleteShow(showId);
+                                adapter.remove(adapter.getItem(position));
+                                adapter.notifyDataSetChanged();
+                                Toast.makeText(view.getContext() , "Show Deleted", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+
+
+//                RelativeLayout rel = (RelativeLayout) view;
+//                int childCount = rel.getChildCount();
+//                String[] properties = new String[childCount];
+//
+//                for (int i = 0; i < childCount; i++) {
+//                    TextView v = (TextView) rel.getChildAt(i);
+//                    properties[i] = (String) v.getText();
+//                }
+//                Show show = new Show(properties[1], properties[2], properties[3]);
+//
+//                Toast.makeText(view.getContext(), "HOLDED: " + show.getTitle(), Toast.LENGTH_SHORT).show();
                 return true;
             }
         };
@@ -81,23 +114,6 @@ public class LastWatchedEpisodesListFragment extends ListFragment implements Lis
         return rootView;
 //        return super.onCreateView(inflater, container, savedInstanceState);
     }
-
-//    @Override
-//    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//        RelativeLayout rel = (RelativeLayout) view;
-//        int childCount = rel.getChildCount();
-//        String[] properties = new String[childCount];
-//
-//        for (int i = 0; i < childCount; i++) {
-//            TextView v = (TextView) rel.getChildAt(i);
-//            properties[i] = (String) v.getText();
-//        }
-//        Show show = new Show(properties[0], properties[1], properties[2]);
-//
-//        Toast.makeText(view.getContext(), "HOLDED: " + show.getTitle(), Toast.LENGTH_SHORT).show();
-//        return true;
-//    }
-
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
