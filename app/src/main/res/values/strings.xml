@@ -13,6 +13,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_sectionHome">Home, sweet home!</string>
     <string name="title_section_background">Change Background</string>
+    <string name="title_section_popular_shows">Most Popular Shows</string>
 
     <string-array name="days_of_week_array">
         <item>Monday</item>

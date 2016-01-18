@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp">
+    android:padding="20dp"
+    android:id="@+id/relLayoutDetailsPage"
+    >
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -51,6 +53,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Air week day!"
+            android:gravity="center"
+            android:layout_margin="10dp" />
+        <TextView
+            android:layout_below="@+id/tv_airweekday"
+            android:id="@+id/tv_lastwatchedepisode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Watched episode!"
+            android:gravity="center"
+            android:layout_margin="10dp" />
+        <TextView
+            android:layout_below="@+id/tv_lastwatchedepisode"
+            android:id="@+id/tv_datelastepisodeiswatched"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="When last episode is watched!"
             android:gravity="center"
             android:layout_margin="10dp" />
 

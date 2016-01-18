@@ -1,17 +1,21 @@
 package com.example.peter.lastwatchedepisode;
 
+import java.util.Date;
+
 public class Show {
     private int id;
     private String title;
     private String description;
+    private String airWeekDay;
+    private int lastWatchedEpisode;
+    private String dateLastEpisodeIsWatched;
 
     public Show(String title, String description, String airWeekDay) {
         this.setTitle(title);
         this.setDescription(description);
         this.setAirWeekDay(airWeekDay);
-    }
 
-    private String airWeekDay;
+    }
 
     public int getId() {
         return id;
@@ -47,6 +51,22 @@ public class Show {
 
     @Override
     public String toString() {
-        return this.getTitle() +" airs on "+ this.getAirWeekDay();
+        return this.getTitle() + " airs on " + this.getAirWeekDay();
+    }
+
+    public int getLastWatchedEpisode() {
+        return lastWatchedEpisode;
+    }
+
+    public void setLastWatchedEpisode(int lastWatchedEpisode) {
+        this.lastWatchedEpisode = lastWatchedEpisode;
+    }
+
+    public String getDateLastEpisodeIsWatched() {
+        return dateLastEpisodeIsWatched;
+    }
+
+    public void setDateLastEpisodeIsWatched(String dateLastEpisodeIsWatched) {
+        this.dateLastEpisodeIsWatched = dateLastEpisodeIsWatched;
     }
 }

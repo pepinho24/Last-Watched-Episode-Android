@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.gesture.GestureOverlayView;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -18,10 +19,12 @@ import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
@@ -29,6 +32,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,14 +40,18 @@ import com.example.peter.lastwatchedepisode.fragments.AddShowFragment;
 import com.example.peter.lastwatchedepisode.fragments.ChangeBackgroundFragment;
 import com.example.peter.lastwatchedepisode.fragments.HomeFragment;
 import com.example.peter.lastwatchedepisode.fragments.LastWatchedEpisodesListFragment;
+import com.example.peter.lastwatchedepisode.fragments.PopularShowsFragment;
 import com.example.peter.lastwatchedepisode.fragments.ShowDetailsPageFragment;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, InterestingEvent{
+
 
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -60,6 +68,8 @@ public class MainActivity extends ActionBarActivity
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                         // TODO Auto-generated method stub
+                        // StartAsyncTask();
+
                     }
                 });
         AlertDialog alert = builder.create();
@@ -80,6 +90,17 @@ public class MainActivity extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+//
+//
+//    private void StartAsyncTask(){
+//
+//        MyAsyncTask task =  new MyAsyncTask();
+//        task.delegate = this;
+//        task.execute("");
+//
+//
+//    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +119,8 @@ public class MainActivity extends ActionBarActivity
         // Set background on start
         SetBackground();
     }
+
+
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -121,6 +144,9 @@ public class MainActivity extends ActionBarActivity
                 break;
             case 4:
                 fragment = new ChangeBackgroundFragment();
+                break;
+            case 5:
+                fragment = new PopularShowsFragment();
                 break;
 
         }
@@ -149,6 +175,9 @@ public class MainActivity extends ActionBarActivity
                 break;
             case 5:
                 mTitle = getString(R.string.title_section_background);
+                break;
+            case 6:
+                mTitle = getString(R.string.title_section_popular_shows);
                 break;
         }
     }
@@ -275,6 +304,19 @@ public class MainActivity extends ActionBarActivity
     public boolean hasCamera() {
         return getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
     }
+
+    @Override
+    public void resolve(Integer progress) {
+
+    }
+
+
+
+
+//    @Override
+//    public void processFinish(ArrayList<String> output) {
+//        System.out.println(output[0]);
+//    }
 
 
     /**
