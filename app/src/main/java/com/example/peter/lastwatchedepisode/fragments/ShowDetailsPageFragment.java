@@ -88,7 +88,7 @@ public class ShowDetailsPageFragment extends Fragment {
                 String title = ((TextView) view.findViewById(R.id.tv_title)).getText().toString();
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                builder.setMessage("Are you sure you want to watch '"+title +"' ?")
+                builder.setMessage("Are you sure you want to watch the next episode of '" + title + "' ?")
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
