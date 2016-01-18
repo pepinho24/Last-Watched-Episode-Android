@@ -136,7 +136,6 @@ public class LastWatchedEpisodesListFragment extends ListFragment implements Lis
             case R.id.btn_add:
                 Show[] shows = new Show[]{new Show("Show title 1 ", "Description 1", "Sunday"), new Show("Show title 2 ", "Description 2", "Friday"), new Show("Show title 3 ", "Description 3", "Monday")};
                 int nextInt = new Random().nextInt(3);
-                // save the new comment to the database
                 show = datasource.createShow(shows[nextInt].getTitle(), shows[nextInt].getDescription(), shows[nextInt].getAirWeekDay());
                 adapter.add(show);
                 Toast.makeText(v.getContext(), "Show Added", Toast.LENGTH_SHORT).show();

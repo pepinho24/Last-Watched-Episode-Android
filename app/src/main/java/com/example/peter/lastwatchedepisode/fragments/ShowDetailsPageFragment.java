@@ -1,5 +1,9 @@
 package com.example.peter.lastwatchedepisode.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,8 +12,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.peter.lastwatchedepisode.R;
 import com.example.peter.lastwatchedepisode.Show;
@@ -55,7 +61,7 @@ public class ShowDetailsPageFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         init();
-
+        SetOnClickListener();
         Bundle args = this.getArguments();
         if (args != null) {
             ArrayList<String> obj = args.getStringArrayList("ShowDetails");
@@ -65,6 +71,46 @@ public class ShowDetailsPageFragment extends Fragment {
                 setTextToViews(id);
             }
         }
+    }
+
+    private void watchShow(long showId){
+        database.watchShow(showId);
+        Toast.makeText(this.getActivity(), "Show Watched", Toast.LENGTH_SHORT).show();
+        setTextToViews(showId);
+    }
+
+    private void SetOnClickListener(){
+
+        View.OnLongClickListener listener = new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                final long showId = new Integer(((TextView) view.findViewById(R.id.tv_id)).getText().toString());
+                String title = ((TextView) view.findViewById(R.id.tv_title)).getText().toString();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setMessage("Are you sure you want to watch '"+title +"' ?")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                watchShow(showId);
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+
+                            }
+                        });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+
+                return true;
+            }
+        };
+
+        getView().setOnLongClickListener(listener);
     }
 
     @Override

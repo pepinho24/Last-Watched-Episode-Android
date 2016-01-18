@@ -44,7 +44,6 @@ public class MyAsyncTask extends AsyncTask<String, String, Void> {
                     responseStringBuilder.append(line);
                 }
 
-
                 result = responseStringBuilder.toString();
 
             } catch (Exception e) {
