@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,7 +24,38 @@ import com.example.peter.lastwatchedepisode.ShowsDataSource;
 
 import java.util.ArrayList;
 
-public class ShowDetailsPageFragment extends Fragment {
+public class ShowDetailsPageFragment extends Fragment implements AsyncShowResponse {
+    @Override
+    public void processFinish(Show sh) {
+        setTextToViews(sh);
+    }
+
+    private void setTextToViews(Show show) {
+        tvId.setText(String.valueOf(show.getId()));
+        tvTitle.setText(show.getTitle());
+        tvTitle.setTextAppearance(this.getActivity(), android.R.style.TextAppearance_DeviceDefault_Large);
+        tvDescription.setText(show.getDescription());
+        tvAirweekday.setText("Airs every " + show.getAirWeekDay());
+        tvLastWatchedEpisode.setText("Last Watched episode is " + String.valueOf(show.getLastWatchedEpisode()));
+        tvDateLastEpisodeIsWatched.setText("Watched on " + show.getDateLastEpisodeIsWatched());
+    }
+
+    private class GetFromDatabaseAsync extends AsyncTask<Long, Void, Show> {
+        public AsyncShowResponse delegate = null;
+
+        @Override
+        protected Show doInBackground(Long... params) {
+
+            Show dbShow = database.getShowById(params[0]);
+            return dbShow;
+        }
+
+        protected void onPostExecute(Show show) {
+            delegate.processFinish(show);
+        }
+    }
+
+
     ShowsDataSource database;
 
     TextView tvId;
@@ -45,16 +77,21 @@ public class ShowDetailsPageFragment extends Fragment {
         tvDateLastEpisodeIsWatched = (TextView) this.getActivity().findViewById(R.id.tv_datelastepisodeiswatched);
     }
 
-    private void setTextToViews(long id) {
-        Show show = database.getShowById(id);
+    private void setTextToViewsById(long id) {
+        GetFromDatabaseAsync gfdba = new GetFromDatabaseAsync();
+        gfdba.delegate = this;
+        gfdba.execute(id);
 
-        tvId.setText(String.valueOf(show.getId()));
-        tvTitle.setText(show.getTitle());
-        tvTitle.setTextAppearance(this.getActivity(), android.R.style.TextAppearance_DeviceDefault_Large);
-        tvDescription.setText(show.getDescription());
-        tvAirweekday.setText("Airs every " + show.getAirWeekDay());
-        tvLastWatchedEpisode.setText("Last Watched episode is " + String.valueOf(show.getLastWatchedEpisode()));
-        tvDateLastEpisodeIsWatched.setText("Watched on " + show.getDateLastEpisodeIsWatched());
+        System.out.println(id);
+//        Show show = database.getShowById(id);
+//
+//        tvId.setText(String.valueOf(show.getId()));
+//        tvTitle.setText(show.getTitle());
+//        tvTitle.setTextAppearance(this.getActivity(), android.R.style.TextAppearance_DeviceDefault_Large);
+//        tvDescription.setText(show.getDescription());
+//        tvAirweekday.setText("Airs every " + show.getAirWeekDay());
+//        tvLastWatchedEpisode.setText("Last Watched episode is " + String.valueOf(show.getLastWatchedEpisode()));
+//        tvDateLastEpisodeIsWatched.setText("Watched on " + show.getDateLastEpisodeIsWatched());
     }
 
     @Override
@@ -68,18 +105,18 @@ public class ShowDetailsPageFragment extends Fragment {
 
             if (!obj.isEmpty()) {
                 long id = Long.parseLong(obj.get(0));
-                setTextToViews(id);
+                setTextToViewsById(id);
             }
         }
     }
 
-    private void watchShow(long showId){
+    private void watchShow(long showId) {
         database.watchShow(showId);
         Toast.makeText(this.getActivity(), "Show Watched", Toast.LENGTH_SHORT).show();
-        setTextToViews(showId);
+        setTextToViewsById(showId);
     }
 
-    private void SetOnClickListener(){
+    private void SetOnClickListener() {
 
         View.OnLongClickListener listener = new View.OnLongClickListener() {
             @Override
@@ -116,6 +153,7 @@ public class ShowDetailsPageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_show_details_page, container, false);
+
 
         return rootView;
     }
